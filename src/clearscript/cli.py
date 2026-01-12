@@ -36,7 +36,7 @@ def compile_file(input_path: str, output_path: str = None, to_stdout: bool = Fal
         ast = parser.parse()
         
         # Type check (unless disabled)
-        if not no_typecheck:
+        if not args.no_typecheck:
             from .typechecker import TypeChecker
             checker = TypeChecker(ast)
             errors = checker.check()
