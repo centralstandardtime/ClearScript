@@ -35,6 +35,18 @@ def compile_file(input_path: str, output_path: str = None, to_stdout: bool = Fal
         parser = Parser(tokens)
         ast = parser.parse()
         
+        # Type check (unless disabled)
+        if not no_typecheck:
+            from .typechecker import TypeChecker
+            checker = TypeChecker(ast)
+            errors = checker.check()
+            
+            if errors:
+                print(f"Type checking failed with {len(errors)} error(s):", file=sys.stderr)
+                for error in errors:
+                    print(f"  {error}", file=sys.stderr)
+                return False
+        
         # Code generation
         codegen = CodeGenerator(ast)
         output = codegen.generate()
@@ -84,6 +96,7 @@ Examples:
     compile_parser.add_argument('input', help='Input ClearScript file (.cs)')
     compile_parser.add_argument('-o', '--output', help='Output StateScript file (.ss)')
     compile_parser.add_argument('--stdout', action='store_true', help='Print to stdout instead of file')
+    compile_parser.add_argument('--no-typecheck', action='store_true', help='Disable type checking')
     
     # Version command
     version_parser = subparsers.add_parser('version', help='Show version information')
