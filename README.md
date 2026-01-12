@@ -1,6 +1,6 @@
 # ClearScript
 
-[![CI](https://github.com/yourusername/ClearScript/workflows/CI/badge.svg)](https://github.com/yourusername/ClearScript/actions)
+[![CI](https://github.com/centralstandardtime/ClearScript/workflows/CI/badge.svg)](https://github.com/centralstandardtime/ClearScript/actions)
 
 A C-styled language that compiles to InfiltrationEngine's StateScript.
 
