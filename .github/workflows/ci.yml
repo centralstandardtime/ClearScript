@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }} - Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install -r requirements.txt
+    
+    - name: Run tests
+      run: |
+        pytest tests/ -v --cov=clearscript --cov-report=xml
+    
+    - name: Upload coverage
+      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install black isort flake8
+    
+    - name: Check formatting with black
+      run: black --check src/ tests/
+      continue-on-error: true
+    
+    - name: Check import sorting with isort
+      run: isort --check-only src/ tests/
+      continue-on-error: true
+    
+    - name: Lint with flake8
+      run: flake8 src/ tests/ --max-line-length=120 --extend-ignore=E203,W503
+      continue-on-error: true
+
+  compile-examples:
+    name: Compile All Examples
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install ClearScript
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+    
+    - name: Compile all .cs examples
+      run: |
+        echo "Compiling all ClearScript examples..."
+        python -c "
+        import glob
+        from src.clearscript.lexer import Lexer
+        from src.clearscript.parser import Parser
+        from src.clearscript.codegen import CodeGenerator
+        
+        files = sorted(glob.glob('examples/*.cs'))
+        print(f'Found {len(files)} example files\n')
+        
+        errors = []
+        for file in files:
+            try:
+                with open(file, encoding='utf-8') as f:
+                    source = f.read()
+                lexer = Lexer(source)
+                parser = Parser(lexer.tokenize())
+                ast = parser.parse()
+                output = CodeGenerator(ast).generate()
+                lines = len(output.strip().split('\n'))
+                print(f'✓ {file:40s} -> {lines:4d} lines of StateScript')
+            except Exception as e:
+                errors.append((file, str(e)))
+                print(f'✗ {file:40s} FAILED: {e}')
+        
+        print(f'\nResults: {len(files) - len(errors)}/{len(files)} examples compiled successfully')
+        
+        if errors:
+            print('\nErrors:')
+            for file, error in errors:
+                print(f'  {file}: {error}')
+            exit(1)
+        "
