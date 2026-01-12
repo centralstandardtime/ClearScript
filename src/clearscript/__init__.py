@@ -1,11 +1,8 @@
 """
-ClearScript - A C-styled, highly readable language that compiles to StateScript.
-
-Version: 0.1.0
+ClearScript Compiler Package
 """
 
 __version__ = "0.1.0"
-__author__ = "ClearScript Contributors"
 
 from .lexer import Lexer
 from .parser import Parser

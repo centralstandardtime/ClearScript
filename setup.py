@@ -7,10 +7,10 @@ setup(
     name="clearscript",
     version="0.1.0",
     author="ClearScript Contributors",
-    description="A C-styled, highly readable language that compiles to StateScript",
+    description="A compiler that uses C-style code to make a more readable InfiltrationEngine StateScript",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/ClearScript",
+    url="https://github.com/centralstandardtime/ClearScript",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     classifiers=[

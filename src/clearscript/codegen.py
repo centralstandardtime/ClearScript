@@ -318,8 +318,6 @@ class CodeGenerator:
             # Next case check
             self.output.append(f":{next_label}")
         
-        # Default case
-        if node.default_case:
             for stmt in node.default_case.statements:
                 self.visit(stmt)
         
@@ -333,6 +331,24 @@ class CodeGenerator:
             self.output.append(f"SET {node.name} {value_str}")
         else:
             self.output.append(f"SET {node.name} 0")
+    
+    def visit_class_declaration(self, node: ClassDeclaration):
+        """
+        Transpile class to namespaced variables and prefixed methods.
+        Classes are templates - they define structure but don't generate code directly.
+        Instances would be created manually with namespaced variables.
+        """
+        # Classes don't generate output directly - they're templates
+        # Actual instances would need manual variable creation
+        # e.g., player1_health, player1_score
+        # This is a design limitation due to StateScript's lack of OOP
+        pass
+    
+    def visit_struct_declaration(self, node: StructDeclaration):
+        """Transpile struct to namespaced variables (data-only)"""
+        # Similar to classes - structs are templates
+        # No code generation needed for the definition itself
+        pass
     
     def visit_return_statement(self, node: ReturnStatement):
         """Generate: RETURN"""
