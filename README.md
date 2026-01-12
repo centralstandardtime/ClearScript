@@ -15,12 +15,12 @@ pip install -e .
 ### Compile a file
 
 ```bash
-clearscript compile input.cs -o output.ss
+clearscript compile input.cst -o output.ss
 ```
 
 ### Example
 
-**input.cs:**
+**input.cst:**
 ```c
 int x = 10;
 

@@ -87,7 +87,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .
     
-    - name: Compile all .cs examples
+    - name: Compile all .cst examples
       run: |
         echo "Compiling all ClearScript examples..."
         python -c "
@@ -96,7 +96,7 @@ jobs:
         from src.clearscript.parser import Parser
         from src.clearscript.codegen import CodeGenerator
         
-        files = sorted(glob.glob('examples/*.cs'))
+        files = sorted(glob.glob('examples/*.cst'))
         print(f'Found {len(files)} example files\n')
         
         errors = []

@@ -15,7 +15,7 @@ def compile_file(input_path: str, output_path: str = None, to_stdout: bool = Fal
     Compile a ClearScript file to StateScript.
     
     Args:
-        input_path: Path to the .cs input file
+        input_path: Path to the .cst input file
         output_path: Path to the .ss output file (optional)
         to_stdout: If True, print to stdout instead of file
     
@@ -83,9 +83,9 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  clearscript compile input.cs                 # Compile to input.ss
-  clearscript compile input.cs -o output.ss    # Compile to specific output
-  clearscript compile input.cs --stdout        # Print to stdout
+  clearscript compile input.cst                 # Compile to input.ss
+  clearscript compile input.cst -o output.ss    # Compile to specific output
+  clearscript compile input.cst --stdout        # Print to stdout
         """
     )
     
@@ -93,7 +93,7 @@ Examples:
     
     # Compile command
     compile_parser = subparsers.add_parser('compile', help='Compile ClearScript to StateScript')
-    compile_parser.add_argument('input', help='Input ClearScript file (.cs)')
+    compile_parser.add_argument('input', help='Input ClearScript file (.cst)')
     compile_parser.add_argument('-o', '--output', help='Output StateScript file (.ss)')
     compile_parser.add_argument('--stdout', action='store_true', help='Print to stdout instead of file')
     compile_parser.add_argument('--no-typecheck', action='store_true', help='Disable type checking')
